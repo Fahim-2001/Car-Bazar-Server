@@ -47,6 +47,15 @@ async function run() {
       const cars = await carsCollection.find(query).toArray();
       res.send(cars);
     });
+
+    // catagorie data load
+    app.get("/category/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {};
+      const cursor = await carsCollection.find(query).toArray();
+      const categorised_car = cursor.filter((n) => n.category_id === id);
+      res.send(categorised_car);
+    });
   } finally {
   }
 }
