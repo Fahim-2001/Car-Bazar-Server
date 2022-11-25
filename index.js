@@ -26,3 +26,19 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+
+async function run() {
+  try {
+    const carsCollection = client
+      .db("car_bazar")
+      .collection("reconditioned_cars");
+
+    app.get("/cars", async (req, res) => {
+      const query = {};
+      const cars = await carsCollection.find(query).toArray();
+      res.send(cars);
+    });
+  } finally {
+  }
+}
+run().catch(console.log);
