@@ -33,6 +33,8 @@ async function run() {
       .db("car_bazar")
       .collection("reconditioned_cars");
 
+    const bookingCollection = client.db("car_bazar").collection("bookings");
+
     app.get("/cars", async (req, res) => {
       const query = {};
       const cars = await carsCollection.find(query).toArray();
@@ -48,13 +50,26 @@ async function run() {
       res.send(cars);
     });
 
-    // catagorie data load
+    // Catagory data load
     app.get("/category/:id", async (req, res) => {
       const id = req.params.id;
       const query = {};
       const cursor = await carsCollection.find(query).toArray();
       const categorised_car = cursor.filter((n) => n.category_id === id);
       res.send(categorised_car);
+    });
+
+    // Booking Info
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      const bookings = await bookingCollection.insertOne(booking);
+      res.send(bookings);
+    });
+
+    app.get("/bookings", async (req, res) => {
+      const query = {};
+      const bookings = await bookingCollection.find(query).toArray();
+      res.send(bookings);
     });
   } finally {
   }
