@@ -34,6 +34,7 @@ async function run() {
       .collection("reconditioned_cars");
 
     const bookingCollection = client.db("car_bazar").collection("bookings");
+    const accountCollection = client.db("car_bazar").collection("accounts");
 
     app.get("/cars", async (req, res) => {
       const query = {};
@@ -70,6 +71,19 @@ async function run() {
       const query = {};
       const bookings = await bookingCollection.find(query).toArray();
       res.send(bookings);
+    });
+
+    // Users Info
+    app.post("/accounts", async (req, res) => {
+      const account = req.body;
+      const accounts = await accountCollection.insertOne(account);
+      res.send(accounts);
+    });
+
+    app.get("/accounts", async (req, res) => {
+      const query = {};
+      const accounts = await accountCollection.find(query).toArray();
+      res.send(accounts);
     });
   } finally {
   }
