@@ -73,6 +73,14 @@ async function run() {
       res.send(bookings);
     });
 
+    // Email Query //
+    app.get("/bookings", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = await bookingCollection.find(query).toArray();
+      res.send(cursor);
+    });
+
     // Users Info
     app.post("/accounts", async (req, res) => {
       const account = req.body;
@@ -112,7 +120,6 @@ async function run() {
         updateDoc,
         option
       );
-      console.log(result);
       res.send(result);
     });
     app.get("/accounts/admin/:email", async (req, res) => {
