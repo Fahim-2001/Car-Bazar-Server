@@ -32,9 +32,9 @@ async function run() {
     const carsCollection = client
       .db("car_bazar")
       .collection("reconditioned_cars");
-
     const bookingCollection = client.db("car_bazar").collection("bookings");
     const accountCollection = client.db("car_bazar").collection("accounts");
+    const itemsCollection = client.db("car_bazar").collection("items");
 
     app.get("/cars", async (req, res) => {
       const query = {};
@@ -84,6 +84,42 @@ async function run() {
       const query = {};
       const accounts = await accountCollection.find(query).toArray();
       res.send(accounts);
+    });
+
+    app.get("/accounts", async (req, res) => {
+      const query = {};
+      const cursor = await accountCollection.find(query);
+      const reviews = await cursor.toArray();
+      const reverseArray = reviews.reverse();
+      res.send(reverseArray);
+    });
+    app.post("/accounts", async (req, res) => {
+      const user = req.body;
+      const result = await accountCollection.insertOne(user);
+      res.send(result);
+    });
+    app.put("/accounts/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const option = { upsert: true };
+      const updateDoc = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = await accountCollection.updateOne(
+        filter,
+        updateDoc,
+        option
+      );
+      console.log(result);
+      res.send(result);
+    });
+    app.get("/accounts/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await accountCollection.findOne(query);
+      res.send({ isAdmin: user?.role === "admin" });
     });
   } finally {
   }
