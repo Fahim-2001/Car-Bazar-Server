@@ -34,7 +34,9 @@ async function run() {
       .collection("reconditioned_cars");
     const bookingCollection = client.db("car_bazar").collection("bookings");
     const accountCollection = client.db("car_bazar").collection("accounts");
-    const itemsCollection = client.db("car_bazar").collection("items");
+    const sellerProductCollection = client
+      .db("car_bazar")
+      .collection("seller_products");
 
     app.get("/cars", async (req, res) => {
       const query = {};
@@ -127,6 +129,19 @@ async function run() {
       const query = { email };
       const user = await accountCollection.findOne(query);
       res.send({ isAdmin: user?.role === "admin" });
+    });
+
+    // Seller Product API
+    app.post("/myproducts", async (req, res) => {
+      const myproduct = req.body;
+      const myproducts = await sellerProductCollection.insertOne(myproduct);
+      res.send(myproducts);
+    });
+
+    app.get("/myproducts", async (req, res) => {
+      const query = {};
+      const myproducts = await sellerProductCollection.find(query).toArray();
+      res.send(myproducts);
     });
   } finally {
   }
