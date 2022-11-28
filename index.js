@@ -143,6 +143,20 @@ async function run() {
       const myproducts = await sellerProductCollection.find(query).toArray();
       res.send(myproducts);
     });
+
+    app.get("/myproducts/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const products = await sellerProductCollection.find(query).toArray();
+      res.send(products);
+    });
+    // Seller API
+    app.get("/accounts/seller/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await accountCollection.findOne(query);
+      res.send({ isSeller: user?.role === "Seller" });
+    });
   } finally {
   }
 }
